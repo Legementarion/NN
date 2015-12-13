@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SandParser</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="Load">Load...</string>
+    <string name="Exit">Exit</string>
+    <string name="Image">Image</string>
+    <string name="back">back</string>
+</resources>
