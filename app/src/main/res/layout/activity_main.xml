@@ -17,6 +17,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_above="@+id/button"
+        android:scaleType="centerCrop"
         android:contentDescription="@string/Image" />
 
     <Button
