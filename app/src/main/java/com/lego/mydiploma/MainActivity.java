@@ -13,14 +13,20 @@ import android.content.Intent;
 import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-
 import com.lego.mydiploma.Functions.CamDialog;
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.objdetect.HOGDescriptor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -28,9 +34,37 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     private ImageView imageView;
     public DialogFragment myDialogFragment;
+    Filter filter = new Filter();
+
+
+
+
+
+    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+        @Override
+        public void onManagerConnected(int status) {
+            switch (status) {
+                case LoaderCallbackInterface.SUCCESS:
+                {
+                    Log.i("OpenCV", "OpenCV loaded successfully");
+                } break;
+                default:
+                {
+                    super.onManagerConnected(status);
+                } break;
+            }
+        }
+    };
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.imageView);
         myDialogFragment = new CamDialog();
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -70,11 +106,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("ololow");
         System.out.println(requestCode);
         if (requestCode==65538){
             if (resultCode == RESULT_OK) {
-                System.out.println("ololo gallery");
                 Uri selectedImageUri = data.getData();
                 String[] projection = { MediaStore.MediaColumns.DATA };
                 CursorLoader cursorLoader = new CursorLoader(this,selectedImageUri, projection, null, null,
@@ -95,13 +129,13 @@ public class MainActivity extends AppCompatActivity {
                 options.inSampleSize = scale;
                 options.inJustDecodeBounds = false;
                 bm = BitmapFactory.decodeFile(selectedImagePath, options);
-                imageView.setImageBitmap(bm);
+                filter.parse(bm);
+//                setImg(bm);
             }
         }
 
         if (requestCode==65537){
             if (resultCode == RESULT_OK) {
-                System.out.println("ololo camera");
                 Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
@@ -118,17 +152,14 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                imageView.setImageBitmap(thumbnail);
+                filter.parse(thumbnail);
+//                setImg(thumbnail);
             }
         }
     }
 
     public void PressExit(View view) {
         System.exit(1);
-    }
-
-    public int getImgH() {
-        return imageView.getHeight();
     }
     public Bitmap getImg() {
         return imageView.getDrawingCache();
@@ -139,4 +170,20 @@ public class MainActivity extends AppCompatActivity {
     public void setCancelDialog() {
         myDialogFragment.dismiss();
     }
+
+
+    class Filter {
+        Bitmap bitmap = null;
+
+        public void parse(Bitmap bm) {
+            bitmap = bm;
+            Mat mat = new Mat();
+        Utils.bitmapToMat(bitmap, mat);
+        Imgproc.cvtColor(mat, mat, Imgproc.COLOR_RGB2GRAY, 4);
+        HOGDescriptor hog = new HOGDescriptor();
+        Utils.matToBitmap( mat , bitmap );
+            setImg(bitmap);
+        }
+    }
+
 }

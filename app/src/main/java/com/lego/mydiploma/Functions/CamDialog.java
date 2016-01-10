@@ -51,10 +51,16 @@ public class CamDialog extends DialogFragment implements DialogInterface.OnCance
         gallery.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                photoPickerIntent.setType("image/*");
-                dismiss();
-                startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
+                try {
+                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    photoPickerIntent.setType("image/*");
+                    dismiss();
+                    startActivityForResult(photoPickerIntent, GALLERY_REQUEST);}
+                catch (ActivityNotFoundException e){
+                    String errorMessage = "Ваше устройство не поддерживает съемку";
+                    Toast toast = Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT);
+                    toast.show();
+                }
             }
         });
 

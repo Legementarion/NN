@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/NN.iml" filepath="$PROJECT_DIR$/NN.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/libs/OpenCV/OpenCV.iml" filepath="$PROJECT_DIR$/app/libs/OpenCV/OpenCV.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/libs/libs.iml" filepath="$PROJECT_DIR$/app/libs/libs.iml" />
     </modules>
   </component>
 </project>
