@@ -40,7 +40,7 @@ public class CamDialog extends DialogFragment implements DialogInterface.OnCance
                     startActivityForResult(captureIntent, CAMERA_CAPTURE);
                 }
                 catch (ActivityNotFoundException e){
-                    String errorMessage = "Ваше устройство не поддерживает съемку";
+                    String errorMessage = getString(R.string.Error_camera);
                     Toast toast = Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT);
                     toast.show();
                 }
@@ -57,7 +57,7 @@ public class CamDialog extends DialogFragment implements DialogInterface.OnCance
                     dismiss();
                     startActivityForResult(photoPickerIntent, GALLERY_REQUEST);}
                 catch (ActivityNotFoundException e){
-                    String errorMessage = "Ваше устройство не поддерживает съемку";
+                    String errorMessage = getString(R.string.Error_gallery);
                     Toast toast = Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT);
                     toast.show();
                 }

@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity{
             FragmentManager manager = getSupportFragmentManager();
             myDialogFragment.show(manager, "dialog");
         }catch (ActivityNotFoundException e){
-            String errorMessage = "Ваше устройство не поддерживает съемку";
+            String errorMessage = getString(R.string.Error_camera);
             Toast toast = Toast
                     .makeText(this, errorMessage, Toast.LENGTH_SHORT);
             toast.show();
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity{
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(selectedImagePath, options);
-                final int REQUIRED_SIZE = 200;
+                final int REQUIRED_SIZE = 400;
                 int scale = 1;
                 while (options.outWidth / scale / 2 >= REQUIRED_SIZE
                         && options.outHeight / scale / 2 >= REQUIRED_SIZE)

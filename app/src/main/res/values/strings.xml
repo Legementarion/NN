@@ -6,4 +6,6 @@
     <string name="Exit">Exit</string>
     <string name="Image">Image</string>
     <string name="back">back</string>
+    <string name="Error_camera">Ваше устройство не поддерживает съемку</string>
+    <string name="Error_gallery">Невозможно открыть галерею</string>
 </resources>

@@ -15,9 +15,8 @@ public class ContentActivity extends Activity {
         setContentView(R.layout.activity_content);
     }
 
-
-    public void BackToMain(View view) {
-        Intent intent = new Intent(ContentActivity.this, MainActivity.class);
-        startActivity(intent);
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }
