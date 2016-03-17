@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity{
     private ImageView imageView;
     public DialogFragment myDialogFragment;
     Filter filter = new Filter();
+    private int minSize;
 
 
 
@@ -101,6 +102,12 @@ public class MainActivity extends AppCompatActivity{
                     .makeText(this, errorMessage, Toast.LENGTH_SHORT);
             toast.show();
         }
+        if(imageView.getHeight()<imageView.getWidth()){
+            minSize = imageView.getHeight();
+        }else {
+            minSize = imageView.getWidth();
+        }
+
 
     }
 
@@ -121,10 +128,10 @@ public class MainActivity extends AppCompatActivity{
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(selectedImagePath, options);
-                final int REQUIRED_SIZE = 400;
+
                 int scale = 1;
-                while (options.outWidth / scale / 2 >= REQUIRED_SIZE
-                        && options.outHeight / scale / 2 >= REQUIRED_SIZE)
+                while (options.outWidth / scale / 2 >= minSize
+                        && options.outHeight / scale / 2 >= minSize)
                     scale *= 2;
                 options.inSampleSize = scale;
                 options.inJustDecodeBounds = false;
