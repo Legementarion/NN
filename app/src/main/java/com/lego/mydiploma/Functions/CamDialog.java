@@ -29,7 +29,7 @@ public class CamDialog extends DialogFragment implements DialogInterface.OnCance
 
     ImageButton camera;
     ImageButton gallery;
-    public static Uri fileUri;
+    private Uri fileUri;
     final int CAMERA_CAPTURE = 1;
     final int GALLERY_REQUEST = 2;
     public static final int MEDIA_TYPE_IMAGE = 1;
@@ -48,9 +48,9 @@ public class CamDialog extends DialogFragment implements DialogInterface.OnCance
                 try{
                     Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     dismiss();
-                    fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
-//                    captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                    startActivityForResult(captureIntent, CAMERA_CAPTURE);
+                    setFileUri(getOutputMediaFileUri(MEDIA_TYPE_IMAGE));
+                    captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, getFileUri());
+                    getActivity().startActivityForResult(captureIntent, CAMERA_CAPTURE);
                 }
                 catch (ActivityNotFoundException e){
                     String errorMessage = getString(R.string.error_camera);
@@ -68,7 +68,7 @@ public class CamDialog extends DialogFragment implements DialogInterface.OnCance
                     Intent photoPickerIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     photoPickerIntent.setType("image/*");
                     dismiss();
-                    startActivityForResult(photoPickerIntent, GALLERY_REQUEST);}
+                    getActivity().startActivityForResult(photoPickerIntent, GALLERY_REQUEST);}
                 catch (ActivityNotFoundException e){
                     String errorMessage = getString(R.string.error_gallery);
                     Toast toast = Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT);
@@ -120,4 +120,11 @@ public class CamDialog extends DialogFragment implements DialogInterface.OnCance
         return mediaFile;
     }
 
+    public Uri getFileUri() {
+        return fileUri;
+    }
+
+    public void setFileUri(Uri fileUri) {
+        this.fileUri = fileUri;
+    }
 }

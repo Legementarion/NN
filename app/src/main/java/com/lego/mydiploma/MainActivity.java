@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Intent;
 import android.support.v4.content.CursorLoader;
@@ -23,7 +22,9 @@ import com.lego.mydiploma.Functions.CamDialog;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
-    public DialogFragment myDialogFragment;
+    CamDialog myDialogFragment;
+    final int CAMERA_CAPTURE = 1;
+    final int GALLERY_REQUEST = 2;
     //    Filter filter = new Filter();
     private int minSize;
 
@@ -92,14 +93,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        CamDialog.fileUri = savedInstanceState.getParcelable("file_uri");
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 65538) {
+        if (requestCode == GALLERY_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Uri selectedImageUri = data.getData();
                 String[] projection = {MediaStore.MediaColumns.DATA};
@@ -126,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (requestCode == 65537) {
+        if (requestCode == CAMERA_CAPTURE) {
             if (resultCode == RESULT_OK) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 int scale = 1;
@@ -136,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 options.inSampleSize = scale;
 
-                final Bitmap bitmap = BitmapFactory.decodeFile(CamDialog.fileUri.getPath(),
+                final Bitmap bitmap = BitmapFactory.decodeFile(myDialogFragment.getFileUri().getPath(),
                         options);
 //                filter.parse(thumbnail);
                 setImg(bitmap);
