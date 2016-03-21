@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             FragmentManager manager = getSupportFragmentManager();
             myDialogFragment.show(manager, "dialog");
         } catch (ActivityNotFoundException e) {
-            String errorMessage = getString(R.string.Error_camera);
+            String errorMessage = getString(R.string.error_camera);
             Toast toast = Toast
                     .makeText(this, errorMessage, Toast.LENGTH_SHORT);
             toast.show();
@@ -89,8 +89,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             minSize = imageView.getWidth();
         }
-
-
     }
 
     @Override

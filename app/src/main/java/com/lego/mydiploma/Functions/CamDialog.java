@@ -27,13 +27,14 @@ import java.util.Locale;
 
 public class CamDialog extends DialogFragment implements DialogInterface.OnCancelListener{
 
-    private static final String IMAGE_DIRECTORY_NAME = "ololo";
     ImageButton camera;
     ImageButton gallery;
     public static Uri fileUri;
     final int CAMERA_CAPTURE = 1;
     final int GALLERY_REQUEST = 2;
     public static final int MEDIA_TYPE_IMAGE = 1;
+    private static final String IMAGE_DIRECTORY_NAME = "ololo";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
@@ -48,12 +49,11 @@ public class CamDialog extends DialogFragment implements DialogInterface.OnCance
                     Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     dismiss();
                     fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
-
-                    captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+//                    captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                     startActivityForResult(captureIntent, CAMERA_CAPTURE);
                 }
                 catch (ActivityNotFoundException e){
-                    String errorMessage = getString(R.string.Error_camera);
+                    String errorMessage = getString(R.string.error_camera);
                     Toast toast = Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT);
                     toast.show();
                 }
@@ -70,7 +70,7 @@ public class CamDialog extends DialogFragment implements DialogInterface.OnCance
                     dismiss();
                     startActivityForResult(photoPickerIntent, GALLERY_REQUEST);}
                 catch (ActivityNotFoundException e){
-                    String errorMessage = getString(R.string.Error_gallery);
+                    String errorMessage = getString(R.string.error_gallery);
                     Toast toast = Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT);
                     toast.show();
                 }
