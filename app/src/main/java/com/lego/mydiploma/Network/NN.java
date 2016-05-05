@@ -1,4 +1,4 @@
-package com.lego.mydiploma.Functions;
+package com.lego.mydiploma.Network;
 
 /**
  * @author Lego on 18.03.2016.

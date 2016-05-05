@@ -1,10 +1,13 @@
-package com.lego.mydiploma;
+package com.lego.mydiploma.Activity;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.content.Intent;
@@ -18,6 +21,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.lego.mydiploma.Functions.CamDialog;
+import com.lego.mydiploma.R;
+import com.yalantis.ucrop.UCrop;
+
+import java.io.File;
+import java.io.IOException;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -27,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
     final int GALLERY_REQUEST = 2;
     //    Filter filter = new Filter();
     private int minSize;
-
+    private Uri sourceImageUri;
+    final String CROPPED_IMAGE_NAME = "CroppedImage.png";
 
 //    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 //        @Override
@@ -94,49 +103,47 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == GALLERY_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Uri selectedImageUri = data.getData();
-                String[] projection = {MediaStore.MediaColumns.DATA};
-                CursorLoader cursorLoader = new CursorLoader(this, selectedImageUri, projection, null, null,
-                        null);
-                Cursor cursor = cursorLoader.loadInBackground();
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-                cursor.moveToFirst();
-                String selectedImagePath = cursor.getString(column_index);
-                Bitmap bm;
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(selectedImagePath, options);
-                int scale = 1;
-                while (options.outWidth / scale / 2 >= minSize
-                        && options.outHeight / scale / 2 >= minSize) {
-                    scale *= 2;
+        if (resultCode == RESULT_OK) {
+            sourceImageUri = myDialogFragment.getFileUri();
+            if (requestCode == GALLERY_REQUEST) {
+                Uri sourceUri = data.getData();
+                //TODO: checking of file existing
+                File croppedImgFile = null;
+                try {
+                    croppedImgFile = File.createTempFile(CROPPED_IMAGE_NAME, ".png", getCacheDir());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                options.inSampleSize = scale;
-                options.inJustDecodeBounds = false;
-                bm = BitmapFactory.decodeFile(selectedImagePath, options);
-//                filter.parse(bm);
-                setImg(bm);
-            }
-        }
-
-        if (requestCode == CAMERA_CAPTURE) {
-            if (resultCode == RESULT_OK) {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                int scale = 1;
-                while (options.outWidth / scale / 2 >= minSize
-                        && options.outHeight / scale / 2 >= minSize) {
-                    scale *= 2;
+                if (croppedImgFile.exists()) {
+                    sourceImageUri = Uri.fromFile(croppedImgFile);
+                    toCrop(sourceUri, sourceImageUri);
                 }
-                options.inSampleSize = scale;
-
-                final Bitmap bitmap = BitmapFactory.decodeFile(myDialogFragment.getFileUri().getPath(),
-                        options);
-//                filter.parse(thumbnail);
-                setImg(bitmap);
             }
+            //returning from camera
+            else if (requestCode == CAMERA_CAPTURE) {
+                toCrop(sourceImageUri, sourceImageUri);
+            }
+            //returning from Yalantis crop
+            else if (requestCode == UCrop.REQUEST_CROP) {
+                sourceImageUri = UCrop.getOutput(data);
+                imageView.setImageURI(sourceImageUri);
+            } else if (resultCode == UCrop.RESULT_ERROR) {
+                imageView.setImageURI(sourceImageUri);
+            }
+            Handler mHandler = new Handler();
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(MainActivity.this, ContentActivity.class);
+                    startActivity(intent);
+                }
+            }, 14000);
+
         }
+    }
+    private void toCrop(Uri source, Uri destination) {
+        //Yalantis crop library (with rotation)
+        UCrop.of(source, destination).start(this);
     }
 
     public void PressExit(View view) {

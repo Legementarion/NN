@@ -1,10 +1,13 @@
 package com.lego.mydiploma.Functions;
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -64,6 +67,11 @@ public class CamDialog extends DialogFragment implements DialogInterface.OnCance
         gallery.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                    }
+                }
                 try {
                     Intent photoPickerIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     photoPickerIntent.setType("image/*");
@@ -112,7 +120,7 @@ public class CamDialog extends DialogFragment implements DialogInterface.OnCance
         File mediaFile;
         if (type == MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "IMG_" + timeStamp + ".jpg");
+                    + "IMG_" + timeStamp + ".png");
         } else {
             return null;
         }
