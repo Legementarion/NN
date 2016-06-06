@@ -8,4 +8,6 @@
     <string name="back">back</string>
     <string name="error_camera">Ваше устройство не поддерживает съемку</string>
     <string name="error_gallery">Невозможно открыть галерею</string>
+    <string name="value">Объём %</string>
+    <string name="nameMineral">Название Минерала</string>
 </resources>
